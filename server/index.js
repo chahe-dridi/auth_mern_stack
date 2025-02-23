@@ -13,6 +13,18 @@ mongoose.connect('mongodb://127.0.0.1:27017/employee', {
   useUnifiedTopology: true,
 });
 
+app.post('/login', (req, res) => {
+  EmployeeModel.findOne({ email: req.body.email, password: req.body.password })
+    .then((employee) => {
+      if (employee) {
+        res.json({ success: true, employee });
+      } else {
+        res.status(400).json({ success: false, message: 'Invalid credentials' });
+      }
+    })
+    .catch((err) => res.status(400).json({ success: false, message: 'Invalid credentials' }));
+});
+
 app.post('/register', (req, res) => {
   EmployeeModel.create(req.body)
     .then((employee) => res.json(employee))
